@@ -1,0 +1,15 @@
+[project]
+name = "zotero-server"
+version = "0.1.0"
+description = "Minimal Zotero sync server"
+requires-python = ">=3.10"
+dependencies = [
+    "bcrypt>=5.0.0",
+    "fastapi>=0.115.0",
+    "uvicorn[standard]>=0.30.0",
+    "sqlalchemy>=2.0.0",
+    "aiosqlite>=0.20.0",
+]
+
+[project.scripts]
+zotero-server = "zotero_server.main:main"
