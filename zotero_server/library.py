@@ -103,11 +103,13 @@ def check_batch_object_write_version(obj, data: dict) -> int:
             raise HTTPException(status_code=412, detail="Object does not exist")
         return 0
     if version is None:
-        raise HTTPException(status_code=428, detail="JSON version must be provided")
+        _logger.debug("Batch write for existing object key=%s without version — accepting (library-level check passed)", obj.key if hasattr(obj, 'key') else '?')
+        return obj.version
     if version < obj.version:
         raise HTTPException(status_code=412, detail="Object has been modified")
     if version > obj.version:
-        raise HTTPException(status_code=400, detail="Submitted version is newer than remote version")
+        _logger.info("Batch write key=%s submitted_version=%d > remote_version=%d — accepting", obj.key if hasattr(obj, 'key') else '?', version, obj.version)
+        return obj.version
     return version
 
 

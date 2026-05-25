@@ -46,6 +46,13 @@ This server targets lightweight personal multi-device data sync.
 - [x] Existing items no longer require `itemType` in partial payloads (md5/mtime/deleted updates).
 - [x] Single-item PUT merges fields instead of replacing.
 
+### Fixes: Batch Version Check Relaxation
+
+- [x] `check_batch_object_write_version`: existing object without `version` field no longer returns `428` — returns `obj.version` instead (library-level `If-Unmodified-Since-Version` already provides consistency guarantee).
+- [x] `check_batch_object_write_version`: submitted `version > obj.version` no longer returns `400` — returns `obj.version` instead (allows client to recover from stale sync state; prevents "Made no progress" deadlock).
+- [x] Stale version conflict (`version < obj.version`) still returns `412` — data integrity preserved.
+- [x] Verified with Zotero 7.0.32 "restore to server" sync flow: no more 428/400 deadlocks.
+
 ## Deployment
 
 - [x] `Dockerfile` for `zotero_server` (python:3.12-slim).
@@ -81,3 +88,4 @@ This server targets lightweight personal multi-device data sync.
 - [x] WebDAV file sync works (attachments upload/download as `.zip`/`.prop`).
 - [x] Batch partial update (attachment md5/mtime) confirmed working after fix.
 - [x] No "Made no progress during upload" errors after batch merge fix.
+- [x] No 428/400 version-check deadlocks after `check_batch_object_write_version` relaxation.
